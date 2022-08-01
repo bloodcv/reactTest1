@@ -1,7 +1,9 @@
+import { getAsyncInfo } from "@/store/actions/channel";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { add, back, change, getAsyncInfo, minus } from "@/store/reducers/channel";
+import { add, back, change, minus } from "@/store/reducers/channel";
+import { RootState } from "@/type/store";
 import { Button } from "antd";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { shallowEqual } from "react-redux";
 import './ReduxjsTookitT.less';
 
@@ -9,8 +11,20 @@ const ReduxjsTookitT: React.FC = () => {
 
   console.log('FC 渲染了')
 
-  const { count, text } = useAppSelector((state: any) => ({ ...state.channel }), shallowEqual);
+  const { count, text } = useAppSelector((state: RootState) => ({ ...state.channel }), shallowEqual);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAsyncInfo(6));
+  }, [dispatch]);
+
+  const btn = useRef(null);
+
+  console.log('btn-fc', btn);
+
+  useEffect(() => {
+    console.log('btn-ref-in-efect', btn)
+  }, [])
 
   return (
     <>
@@ -43,6 +57,9 @@ const ReduxjsTookitT: React.FC = () => {
           dispatch(back())
         }}>
           改回去
+        </Button>
+        <Button type="primary" ref={ btn }>
+          useRef
         </Button>
       </div>
     </>

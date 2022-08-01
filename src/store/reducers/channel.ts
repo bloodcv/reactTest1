@@ -1,41 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { InitialChannelState } from "@/type/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getAsyncInfo } from "../actions/channel";
 
-interface InitialState {
-  count: number;
-  text?: string;
-}
-
-const initialState: InitialState = {
+const initialState: InitialChannelState = {
   count: 0,
-  text: '我是文字'
+  text: '我是文字',
 }
-
-interface PromiseNum {
-  number: number
-}
-
-const promise_one: (param: number) => Promise<PromiseNum> = (param) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject({
-        number: param
-      })
-    }, 2000)
-  })
-}
-
-
-// 异步action
-export const getAsyncInfo = createAsyncThunk("getAsyncInfo", async (param: number, thunk) => {
-  try {
-    const data = await promise_one(param);
-    return data;
-  } catch (error) {
-    console.log('error', error)
-    return thunk.rejectWithValue(error)
-    // throw error
-  }
-})
 
 export const channelSlice = createSlice({
   name: 'channel',
@@ -47,7 +17,7 @@ export const channelSlice = createSlice({
     minus: (state) => {
       state.count -= 1;
     },
-    change: (state, action) => {
+    change: (state, action: PayloadAction<string>) => {
       console.log('action', action)
       state.text = action.payload;
     },
@@ -64,11 +34,14 @@ export const channelSlice = createSlice({
       console.log('action.payload', action.payload); // { number: xx }
       console.log('state.text', state.text); // 我是文字
       state.count += action.payload.number;
+      state.text = '成功';
       console.log('成功')
     })
-    builder.addCase(getAsyncInfo.rejected, (state, err) => {
+    builder.addCase(getAsyncInfo.rejected, (state, action) => {
       // 用 rejectWithValue 把错误信息注入err
-      console.log('失败参数', state, err)
+      console.log('失败参数', state, action)
+      // action.payload 是 unknown 类型 只能类型断言或者typeof判断实际值的类型
+      state.text = (action.payload as PromiseErr).msg
     })
   }
 })

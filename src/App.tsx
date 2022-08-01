@@ -1,11 +1,15 @@
 import React from 'react';
 import './App.css';
-import ReduxjsTookitT from '@/components/ReduxjsTookitT';
+// import PageA from './pages/PageA/PageA';
+import PageC from './pages/PageC';
+// import ReduxjsTookitT from '@/components/ReduxjsTookitT';
 
 function App() {
   return (
     <div className="App">
-      <ReduxjsTookitT />
+      {/* <ReduxjsTookitT /> */}
+      {/* <PageA /> */}
+      <PageC />
     </div>
   );
 }
